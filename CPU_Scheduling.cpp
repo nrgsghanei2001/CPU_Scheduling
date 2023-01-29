@@ -58,23 +58,24 @@ void priority_scheduling::get_input() {
 void priority_scheduling::set_input(int process) {
     p[process-1].pid = process;      // set the pid of the process to its number
     p[process-1].completed = false;      
-    // cout << "Enter the arrival time of process " << process << " : ";
+    cout << "Enter the arrival time of process " << process << " : ";
     cin >> p[process-1].arrive_time;
-    // cout << "Enter the burst time of process " << process << " : ";
+    cout << "Enter the burst time of process " << process << " : ";
     cin >> p[process-1].burst_time;
     p[process-1].remaining_burst_time = p[process-1].burst_time;
-    // cout << "Enter the priority of process " << process << " : ";
+    cout << "Enter the priority of process " << process << " : ";
     cin >> p[process-1].priority;
 }
 ///////////////////////////////////////////////////////////////////
 void priority_scheduling::show_details() {
     // represent all informations of processes
+    cout << "Arrival time    Burst time    Priority" << endl;
     for (int i=0; i<number_of_processes; i++) {
-        cout << p[i].arrive_time << " " << p[i].remaining_burst_time << " " << p[i].priority << endl;
+        cout <<  "     " << p[i].arrive_time << "               " << p[i].burst_time << "             " << p[i].priority << endl;
     }
 }
 //////////////////////////////////////////////////////////////////
-void priority_scheduling::gantt() {
+void priority_scheduling::gantt() {    // print gantt chart for schedulled processes
     for (int i=0; i<total_time*5; i++) {
         cout << "_";
     }
@@ -136,7 +137,7 @@ void priority_scheduling::run(int process) {    // execute the process for curre
         p[index].turnaround_time = p[index].finishing_time - p[index].arrive_time;
         p[index].waiting_time = p[index].turnaround_time - p[index].burst_time;
     }
-    cout << "Finished. " << p[index].remaining_burst_time << " " << p[index].completed << endl;
+    cout << "Finished. remaining time: " << p[index].remaining_burst_time << " completed or not: " << p[index].completed << endl;
 }
 //////////////////////////////////////////////////////////////////
 double priority_scheduling::calculate_turnaround() {
@@ -164,13 +165,8 @@ double priority_scheduling::calculate_respond() {
 }
 //////////////////////////////////////////////////////////////////
 double priority_scheduling::calculate_utilization() {
-    int total_burst_times = 0;
-    double sum = 0.0;
-    for (int i=0; i<number_of_processes; i++) {
-        total_burst_times += p[i].burst_time;
-    }
   
-    return (total_burst_times / clock) * 100;
+    return (total_time / clock) * 100;
 }
 //////////////////////////////////////////////////////////////////
 double priority_scheduling::calculate_throughput() {
@@ -189,7 +185,7 @@ double priority_scheduling::calculate_throughput() {
 //////////////////////////////////////////////////////////////////
 int main() {
     int n;
-    // cout << "Enter the number of total processes: ";
+    cout << "Enter the number of total processes: ";
     cin >> n;
     priority_scheduling obj(n);
     obj.get_input();
@@ -202,3 +198,7 @@ int main() {
     cout << "Throughput: " << obj.calculate_throughput() << endl;
     obj.gantt();
 }
+
+
+// Narges Ghanei
+// 610399155

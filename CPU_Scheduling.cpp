@@ -5,11 +5,11 @@ struct process {                // structure of each process
     int pid;                   
     int arrive_time;            
     int burst_time;
+    int remaining_burst_time;
     int priority;
     bool completed;
-    int start_time;
     int finishing_time;
-    int turn_around_time;
+    int turnaround_time;
     int waiting_time;
     int respond_time;
 };
@@ -28,6 +28,11 @@ class priority_scheduling {
         void show_details();
         void scheduling();
         void run(int);
+        double calculate_turnaround();
+        double calculate_waiting();
+        double calculate_respond();
+        double calculate_utilization();
+        double calculate_throughput();
 };
 ////////////////////////////////////////////////////////////////////
 priority_scheduling::priority_scheduling(int n) {    // initializer 
@@ -49,6 +54,7 @@ void priority_scheduling::set_input(int process) {
     cin >> p[process-1].arrive_time;
     // cout << "Enter the burst time of process " << process << " : ";
     cin >> p[process-1].burst_time;
+    p[process-1].remaining_burst_time = p[process-1].burst_time;
     // cout << "Enter the priority of process " << process << " : ";
     cin >> p[process-1].priority;
 }
@@ -56,7 +62,7 @@ void priority_scheduling::set_input(int process) {
 void priority_scheduling::show_details() {
     // represent all informations of processes
     for (int i=0; i<number_of_processes; i++) {
-        cout << p[i].arrive_time << " " << p[i].burst_time << " " << p[i].priority << endl;
+        cout << p[i].arrive_time << " " << p[i].remaining_burst_time << " " << p[i].priority << endl;
     }
 }
 //////////////////////////////////////////////////////////////////
@@ -81,13 +87,66 @@ void priority_scheduling::scheduling() {
 void priority_scheduling::run(int process) {    // execute the process for current time clock and update properties
     cout << "Process " << process << " is executing..." << endl;
     int index = process - 1;             // location of the process in the array of processes
-    p[index].burst_time -= 1;
-    if (p[index].burst_time == 0) {
+    if (p[index].remaining_burst_time == p[index].burst_time) {
+        p[index].respond_time = clock - p[index].arrive_time;
+    }
+    p[index].remaining_burst_time -= 1;
+    if (p[index].remaining_burst_time == 0) {
         p[index].completed = true;
         finished_processes += 1;
-        p[index].finishing_time = clock;
+        p[index].finishing_time = clock + 1;
+        p[index].turnaround_time = p[index].finishing_time - p[index].arrive_time;
+        p[index].waiting_time = p[index].turnaround_time - p[index].burst_time;
     }
-    cout << "Finished. " << p[index].burst_time << " " << p[index].completed << endl;
+    cout << "Finished. " << p[index].remaining_burst_time << " " << p[index].completed << endl;
+}
+//////////////////////////////////////////////////////////////////
+double priority_scheduling::calculate_turnaround() {
+    double sum = 0.0;
+    for (int i=0; i<number_of_processes; i++) {
+        sum += p[i].turnaround_time;
+    }
+    return sum / number_of_processes;
+}
+//////////////////////////////////////////////////////////////////
+double priority_scheduling::calculate_waiting() {
+    double sum = 0.0;
+    for (int i=0; i<number_of_processes; i++) {
+        sum += p[i].waiting_time;
+    }
+    return sum / number_of_processes;
+}
+//////////////////////////////////////////////////////////////////
+double priority_scheduling::calculate_respond() {
+    double sum = 0.0;
+    for (int i=0; i<number_of_processes; i++) {
+        sum += p[i].respond_time;
+    }
+    return sum / number_of_processes;
+}
+//////////////////////////////////////////////////////////////////
+double priority_scheduling::calculate_utilization() {
+    int total_burst_times = 0;
+    double sum = 0.0;
+    for (int i=0; i<number_of_processes; i++) {
+        total_burst_times += p[i].burst_time;
+    }
+  
+    return (total_burst_times / clock) * 100;
+}
+//////////////////////////////////////////////////////////////////
+double priority_scheduling::calculate_throughput() {
+    int latest_finished = 0, earliest_arrive = 10000;
+    for (int i=0; i<number_of_processes; i++) {
+        if (p[i].finishing_time > latest_finished) {
+            latest_finished = p[i].finishing_time;
+        }
+        if (p[i].arrive_time < earliest_arrive) {
+            earliest_arrive = p[i].arrive_time;
+        }
+    }
+    double throughput = double(number_of_processes) / (latest_finished - earliest_arrive);
+    return throughput;
 }
 //////////////////////////////////////////////////////////////////
 int main() {
@@ -98,4 +157,9 @@ int main() {
     obj.get_input();
     obj.show_details();
     obj.scheduling();
+    cout << "Average TurnAround time: " << obj.calculate_turnaround() << endl;
+    cout << "Average Waiting time: " << obj.calculate_waiting() << endl;
+    cout << "Average Respond time: " << obj.calculate_respond() << endl;
+    cout << "CPU utilization: " << obj.calculate_utilization() << "%" << endl;
+    cout << "Throughput: " << obj.calculate_throughput() << endl;
 }

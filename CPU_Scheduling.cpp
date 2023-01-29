@@ -17,9 +17,11 @@ struct process {                // structure of each process
 class priority_scheduling {         
     private:
         int clock;                 // stores current time
+        int total_time;            // total time that is needed for termination
         int finished_processes;    // number of processes that their execution is finished by current time
         int number_of_processes;   // number of all existing processes
         struct process p[1000];    // stores all processes
+        int* scheduled_list;       // saves the runtimes
     
     public:
         priority_scheduling(int);
@@ -28,6 +30,7 @@ class priority_scheduling {
         void show_details();
         void scheduling();
         void run(int);
+        void gantt();
         double calculate_turnaround();
         double calculate_waiting();
         double calculate_respond();
@@ -39,12 +42,17 @@ priority_scheduling::priority_scheduling(int n) {    // initializer
     clock = 0;                         // set the time to 0
     finished_processes = 0;
     number_of_processes = n;
+    total_time = 0;
 }
 ////////////////////////////////////////////////////////////////////
 void priority_scheduling::get_input() {
     for (int i=1; i<=number_of_processes; i++) {
         set_input(i);             // set the properties of each process
     }
+    for (int i=0; i<number_of_processes; i++) {
+        total_time += p[i].burst_time;
+    }
+    scheduled_list = new int[total_time];
 }
 ////////////////////////////////////////////////////////////////////
 void priority_scheduling::set_input(int process) {
@@ -66,6 +74,35 @@ void priority_scheduling::show_details() {
     }
 }
 //////////////////////////////////////////////////////////////////
+void priority_scheduling::gantt() {
+    for (int i=0; i<total_time*5; i++) {
+        cout << "_";
+    }
+    cout << endl;
+    int prev = 0;
+    for (int i=0; i<total_time; i++) {
+        if (prev != scheduled_list[i]) {
+            cout << "| P" << scheduled_list[i] << " ";
+            prev = scheduled_list[i];
+        }
+        else {
+            cout << "     ";
+        }
+    }
+    cout << '|' << endl;
+    prev = 0;
+    for (int i=0; i<total_time; i++) {
+        if (scheduled_list[i] != prev) {
+            cout << i << "____";
+            prev = scheduled_list[i];
+        }
+        else {
+            cout << "_____";
+        }
+    }
+    cout << total_time;
+}
+//////////////////////////////////////////////////////////////////
 void priority_scheduling::scheduling() {
     // this is the main function that specifies the process that should be run in current time clock
     while (finished_processes != number_of_processes) {  // until the time that every processes are finished
@@ -79,6 +116,7 @@ void priority_scheduling::scheduling() {
             }
         }
         run(selected_process);                  // execute the selected process
+        scheduled_list[clock] = selected_process;
         clock += 1;                             // go for next time clock
     }
     
@@ -162,4 +200,5 @@ int main() {
     cout << "Average Respond time: " << obj.calculate_respond() << endl;
     cout << "CPU utilization: " << obj.calculate_utilization() << "%" << endl;
     cout << "Throughput: " << obj.calculate_throughput() << endl;
+    obj.gantt();
 }

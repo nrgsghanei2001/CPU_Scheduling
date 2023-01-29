@@ -26,6 +26,8 @@ class priority_scheduling {
         void get_input();
         void set_input(int);
         void show_details();
+        void scheduling();
+        void run(int);
 };
 ////////////////////////////////////////////////////////////////////
 priority_scheduling::priority_scheduling(int n) {    // initializer 
@@ -43,11 +45,11 @@ void priority_scheduling::get_input() {
 void priority_scheduling::set_input(int process) {
     p[process-1].pid = process;      // set the pid of the process to its number
     p[process-1].completed = false;      
-    cout << "Enter the arrival time of process " << process << " : ";
+    // cout << "Enter the arrival time of process " << process << " : ";
     cin >> p[process-1].arrive_time;
-    cout << "Enter the burst time of process " << process << " : ";
+    // cout << "Enter the burst time of process " << process << " : ";
     cin >> p[process-1].burst_time;
-    cout << "Enter the priority of process " << process << " : ";
+    // cout << "Enter the priority of process " << process << " : ";
     cin >> p[process-1].priority;
 }
 ///////////////////////////////////////////////////////////////////
@@ -58,11 +60,42 @@ void priority_scheduling::show_details() {
     }
 }
 //////////////////////////////////////////////////////////////////
+void priority_scheduling::scheduling() {
+    // this is the main function that specifies the process that should be run in current time clock
+    while (finished_processes != number_of_processes) {  // until the time that every processes are finished
+        int selected_process = 0;
+        int max_priority = 10000;
+        for (int i=0; i<number_of_processes; i++) {      // check all processes and find the process with maximum
+                                                         // priority by the current time 
+            if (p[i].arrive_time<=clock && !p[i].completed && p[i].priority<max_priority) {
+                max_priority = p[i].priority;
+                selected_process = p[i].pid;
+            }
+        }
+        run(selected_process);                  // execute the selected process
+        clock += 1;                             // go for next time clock
+    }
+    
+}
+//////////////////////////////////////////////////////////////////
+void priority_scheduling::run(int process) {    // execute the process for current time clock and update properties
+    cout << "Process " << process << " is executing..." << endl;
+    int index = process - 1;             // location of the process in the array of processes
+    p[index].burst_time -= 1;
+    if (p[index].burst_time == 0) {
+        p[index].completed = true;
+        finished_processes += 1;
+        p[index].finishing_time = clock;
+    }
+    cout << "Finished. " << p[index].burst_time << " " << p[index].completed << endl;
+}
+//////////////////////////////////////////////////////////////////
 int main() {
     int n;
-    cout << "Enter the number of total processes: ";
+    // cout << "Enter the number of total processes: ";
     cin >> n;
     priority_scheduling obj(n);
     obj.get_input();
     obj.show_details();
+    obj.scheduling();
 }

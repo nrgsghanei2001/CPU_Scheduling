@@ -1,7 +1,22 @@
-**CPU Scheduling**
+# CPU Scheduling
 
-CPU Scheduling is a critical aspect of operating system design, responsible for efficiently allocating CPU resources to various processes. This project presents a meticulously crafted class implementation tailored for priority-based CPU scheduling tasks.
+## Overview
 
-Implemented in C++, the system orchestrates the execution of processes based on their priority levels, ensuring that higher priority tasks are given precedence over lower priority ones. This helps optimize system performance and responsiveness, particularly in scenarios where multiple processes compete for CPU time.
+The **CPU Scheduling** project is designed to demonstrate the principles of process scheduling in operating systems. This implementation focuses on priority-based CPU scheduling.
+This is a simplified implementation meant for educational use in an operating systems course. 
 
-The project encapsulates essential functionalities such as process prioritization, scheduling algorithm execution, and resource allocation. Through this implementation, users gain insights into the intricacies of CPU scheduling mechanisms and their impact on system behavior.
+## Project Description
+
+In this project, a C++ program has been developed to simulate CPU scheduling based on process priority levels. The primary goal is to manage the execution of processes by prioritizing them according to their assigned priority values, ensuring that higher priority tasks are processed before lower priority ones.
+
+## Features
+
+- **Priority-Based Scheduling:**
+  - Implements a priority-based scheduling algorithm to manage the execution order of processes.
+  - Higher priority processes are given precedence, optimizing system performance and responsiveness.
+
+- **Process Management:**
+  - Handles the creation and management of processes with different priority levels.
+
+- **Resource Allocation:**
+  - Manages CPU time allocation among processes based on their priority, illustrating how CPU resources are distributed.

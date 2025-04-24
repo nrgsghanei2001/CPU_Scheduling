@@ -7,7 +7,7 @@ This is a simplified implementation for the Operating Systems course.
 
 ## Project Description
 
-In this project, a C++ program has been developed to simulate CPU scheduling based on process priority levels. The primary goal is to manage the execution of processes by prioritizing them according to their assigned priority values, ensuring that higher priority tasks are processed before lower priority ones.
+In this project, a C++ program has been developed to simulate CPU scheduling based on process priority levels. The goal is to manage the execution of processes by prioritizing them according to their assigned priority values, ensuring that higher priority tasks are processed before lower priority ones.
 
 ## Features
 
